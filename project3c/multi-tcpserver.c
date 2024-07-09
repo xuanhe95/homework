@@ -45,6 +45,7 @@ int main(int argc, char **argv)
     pthread_t threads[MAX_THREADS];
 
     int id = 0;
+    // round-robin
     while (1)
     {
 
@@ -58,12 +59,13 @@ int main(int argc, char **argv)
 
         int *new_sock = malloc(sizeof(int));
         *new_sock = new_s;
-
+        // create a new thread
         if (pthread_create(&threads[id], NULL, connect_to_server, (void *)new_sock) < 0)
         {
             perror("ERROR: pthread_create failed");
             free(new_sock);
         }
+
         id++;
         if (id == MAX_THREADS)
         {
