@@ -111,7 +111,7 @@ int main(int argc, char **argv)
         // there is an event
         else
         {
-            // check if the listener is ready to read
+            // check if there is a new connection
             if (FD_ISSET(listener_fd, &read_set))
             {
                 // find an empty slot in the client_states array
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
                         FD_SET(client_states[i].socket, &all_set);
                         // set the socket to non-blocking
                         fcntl(client_states[i].socket, F_SETFL, O_NONBLOCK);
-                        // set the phase to 1, for TCP handshake this is the SYN_SEND state
+                        // set the phase to 1, for TCP handshake this is the SYN_SENT state
                         client_states[i].phase = SYN_SENT;
                         // allocate memory for the buffer
                         client_states[i].buf = (char *)malloc(MAX_LINE);
@@ -165,16 +165,16 @@ int main(int argc, char **argv)
                         {
                             continue;
                         }
-                        // handle the first phase,
-                        if (client_states[i].phase == 1)
+
+                        switch (client_states[i].phase)
                         {
+                        case SYN_SENT:
                             handle_first_shake(&client_states[i]);
-                        }
-                        // handle the second phase
-                        else if (client_states[i].phase == 2)
-                        {
+                            break;
+                        case ESTABLISHED:
                             handle_second_shake(&client_states[i]);
                             FD_CLR(client_states[i].socket, &all_set);
+                            break;
                         }
                     }
                 }
