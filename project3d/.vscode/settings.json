@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "unistd.h": "c",
+        "_null.h": "c",
+        "ip.h": "c",
+        "inet.h": "c",
+        "__config": "c",
+        "in.h": "c"
+    }
+}
